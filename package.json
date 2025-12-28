@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "typeorm": "^0.3.28",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
