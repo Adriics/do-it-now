@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import "dotenv/config";
-import { actionModel } from "./src/model/ActionModel";
+import { actionModel } from "./model/ActionModel";
 
 const dataSource = new DataSource({
     type: "postgres",
