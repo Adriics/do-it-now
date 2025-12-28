@@ -18,6 +18,12 @@ export const actionModel = new EntitySchema<Action>({
         receptor: {
             type: "text"
         },
+        message: {
+            type: "text"
+        },
+        status: {
+            type: "varchar"
+        },
         executeAt: {
             type: "timestamp",
             default: () => "CURRENT_TIMESTAMP"

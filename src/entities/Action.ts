@@ -37,4 +37,8 @@ export class Action implements Entity {
         this.message = message
         this.status = status
     }
+
+    static create(id: string, type: ActionType, receptor: string, executeAt: Date, message?: string): Action {
+        return new Action(id, type, receptor, executeAt, message)
+    }
 }
