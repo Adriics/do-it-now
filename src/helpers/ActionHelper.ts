@@ -15,4 +15,8 @@ export class ActionHelper extends Helper<Action> {
         return (await this.getRepository()).save(action)
     }
 
+    async getAll(): Promise<Action[]> {
+        return (await this.getRepository()).find()
+    }
+
 }

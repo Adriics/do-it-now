@@ -13,4 +13,8 @@ export class ActionService {
         await this.helper.create(action)
     }
 
+    async getAll() {
+        return this.helper.getAll()
+    }
+
 }
