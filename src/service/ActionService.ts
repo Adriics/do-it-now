@@ -17,4 +17,8 @@ export class ActionService {
         return this.helper.getAll()
     }
 
+    async getById(id: string) {
+        return this.helper.getById(id)
+    }
+
 }

@@ -19,4 +19,8 @@ export class ActionHelper extends Helper<Action> {
         return (await this.getRepository()).find()
     }
 
+    async getById(id: string): Promise<Action | null> {
+        return (await this.getRepository()).findOneBy({ id })
+    }
+
 }
