@@ -1,4 +1,5 @@
 import { Action, ActionType } from "../entities/Action";
+import { ActionNotFound } from "../errors/action/ActionNotFound";
 import { ActionHelper } from "../helpers/ActionHelper";
 
 
@@ -19,6 +20,12 @@ export class ActionService {
 
     async getById(id: string) {
         return this.helper.getById(id)
+    }
+
+    async deleteAction(id: string) {
+        const action = await this.helper.getById(id)
+        if (!action) throw new ActionNotFound("Action not found")
+        return this.helper.delete(id)
     }
 
 }

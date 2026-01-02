@@ -23,4 +23,8 @@ export class ActionHelper extends Helper<Action> {
         return (await this.getRepository()).findOneBy({ id })
     }
 
+    async delete(id: string) {
+        return (await this.getRepository()).delete(id)
+    }
+
 }
