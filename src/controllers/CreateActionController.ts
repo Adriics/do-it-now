@@ -18,12 +18,11 @@ export class CreateActionController {
                 throw new InvalidFields("Faltan campos, rellena todos")
             }
 
-            const newAction = await this.service.create(v4(), type, receptor, executeAt, message)
+            await this.service.create(v4(), type, receptor, executeAt, message)
 
             return res.status(201).json({
                 ok: true,
-                message: "Action creada con exito!",
-                data: newAction
+                message: "Action creada con exito!"
             })
 
         } catch (error) {
