@@ -1,10 +1,11 @@
 import { ActionRepository } from "../repository/ActionRepository";
+import { ActionExecutor } from "../service/ActionExecutor";
 
 
 export class ActionWorker {
     private readonly intervalMS = 30_000 // 30 segundos
 
-    constructor(private readonly repo: ActionRepository) { }
+    constructor(private readonly repo: ActionRepository, private readonly executor: ActionExecutor) { }
     start() {
         console.log("Action worker started")
 
@@ -31,6 +32,8 @@ export class ActionWorker {
         const actionIds = pendingActions.map(action => action.id)
 
         await this.repo.markAsReady(actionIds)
+
+        await Promise.all(pendingActions.map(action => this.executor.preparePayload(action)))
 
         console.log(`${actionIds.length} action(s) marked as READY`)
 

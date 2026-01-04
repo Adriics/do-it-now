@@ -3,6 +3,7 @@ import express, { Express } from "express"
 import { registerRoutes } from "./routes"
 import { ActionWorker } from "./worker/actionWorker"
 import { TypeOrmActionRepository } from "./repository/TypeOrmActionRepository"
+import { ActionExecutor } from "./service/ActionExecutor"
 
 export class Server {
     private app: Express = express()
@@ -17,7 +18,8 @@ export class Server {
         })
 
         const actionRepository = new TypeOrmActionRepository()
-        const worker = new ActionWorker(actionRepository)
+        const executor = new ActionExecutor()
+        const worker = new ActionWorker(actionRepository, executor)
         worker.start()
     }
 
