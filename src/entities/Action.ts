@@ -4,7 +4,8 @@ import { Entity } from "./Entity";
 export enum ActionType {
     WhatsApp = "WhatsApp",
     Email = "Email",
-    URL = "URL"
+    URL = "URL",
+    Personal = "Personal"
 }
 
 // Estados de la acción

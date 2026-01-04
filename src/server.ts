@@ -1,10 +1,13 @@
 import cors from "cors"
 import express, { Express } from "express"
 import { registerRoutes } from "./routes"
-
+import { ActionWorker } from "./worker/actionWorker"
+import { TypeOrmActionRepository } from "./repository/TypeOrmActionRepository"
 
 export class Server {
     private app: Express = express()
+
+
     init(port: number) {
         this.registerMiddlewares()
         this.registerRoutes()
@@ -13,7 +16,12 @@ export class Server {
             console.log(`Listening port ${port}`)
         })
 
+        const actionRepository = new TypeOrmActionRepository()
+        const worker = new ActionWorker(actionRepository)
+        worker.start()
     }
+
+
 
     private registerRoutes() {
         this.app.use(registerRoutes())
