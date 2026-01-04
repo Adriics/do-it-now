@@ -12,6 +12,6 @@ export default function createAction(router: Router) {
     const controller = new CreateActionController(service)
     controller.run = controller.run.bind(controller)
 
-    router.post("/v1/actions", controller.run)
+    router.post("/v1/do-it-now/actions", controller.run)
 
 }

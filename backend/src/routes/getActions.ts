@@ -12,5 +12,5 @@ export default function getActions(router: Router) {
     const controller = new GetActionsController(service)
     controller.run = controller.run.bind(controller)
 
-    router.get("/v1/actions", controller.run)
+    router.get("/v1/do-it-now/actions", controller.run)
 }

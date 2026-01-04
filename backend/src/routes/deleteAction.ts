@@ -12,5 +12,5 @@ export default function deleteAction(router: Router) {
     const controller = new DeleteActionController(service)
     controller.run = controller.run.bind(controller)
 
-    router.delete("/v1/actions/:id", controller.run)
+    router.delete("/v1/do-it-now/actions/:id", controller.run)
 }
