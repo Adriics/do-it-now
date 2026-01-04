@@ -1,0 +1,1 @@
+export class InvalidFields extends Error { }
