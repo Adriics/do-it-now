@@ -1,10 +1,11 @@
-import { ActionType } from "../types/Action"
+import { ActionType, StatusType } from "../types/Action"
 
 interface ActionCardProps {
     id: string,
     type: ActionType,
     receptor: string,
-    message: string
+    message: string,
+    status: StatusType
 }
 
 const handleClick = () => { }
@@ -13,7 +14,8 @@ export default function ActionCard({
     id,
     type,
     receptor,
-    message
+    message,
+    status
 }: ActionCardProps) {
 
     return (
@@ -22,6 +24,7 @@ export default function ActionCard({
             <span>{type}</span>
             <span>{receptor}</span>
             <span>{message}</span>
+            <span>{status}</span>
             <button onClick={handleClick}>Ejecutar acción</button>
         </div>
 

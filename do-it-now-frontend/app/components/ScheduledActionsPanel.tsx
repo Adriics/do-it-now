@@ -12,7 +12,7 @@ export default function ScheduledActionsPanel() {
 
     const getActions = async () => {
 
-        const res = await fetch(`${process.env.DO_IT_NOW_API}/v1/do-it-now/actions`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_DO_IT_NOW_API}/v1/do-it-now/actions`)
 
         const data = await res.json()
 
@@ -20,8 +20,30 @@ export default function ScheduledActionsPanel() {
 
         setActions(data.data || [])
     }
+
     useEffect(() => {
         getActions()
+
+        // Polling cada 10s si la pestaña está visible
+        const interval = setInterval(() => {
+            if (document.visibilityState === "visible") {
+                getActions()
+            }
+        }, 10_000)
+
+        // Refrescar inmediatamente al volver a la pestaña
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                getActions()
+            }
+        }
+        document.addEventListener("visibilitychange", handleVisibilityChange)
+
+        // Cleanup al desmontar
+        return () => {
+            clearInterval(interval)
+            document.removeEventListener("visibilitychange", handleVisibilityChange)
+        }
     }, [])
 
     return (
@@ -35,6 +57,7 @@ export default function ScheduledActionsPanel() {
                         message={action.message ?? ""}
                         receptor={action.receptor ?? ""}
                         type={action.type ?? ""}
+                        status={action.status}
                     />
                 ))
             }
