@@ -48,7 +48,7 @@ export default function ScheduledActionsPanel() {
 
     return (
 
-        <div>
+        <div className="flex flex-col">
             {
                 actions.map((action) => (
                     <ActionCard

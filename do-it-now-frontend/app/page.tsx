@@ -1,4 +1,3 @@
-import Image from "next/image";
 import ScheduledActionsPanel from "./components/ScheduledActionsPanel";
 import CreateActionForm from "./components/CreateActionForm";
 
