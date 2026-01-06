@@ -3,6 +3,7 @@ import createAction from "./createAction";
 import getActions from "./getActions";
 import getAction from "./getAction";
 import deleteAction from "./deleteAction";
+import patchActionStatus from "./patchActionStatus";
 
 
 
@@ -14,6 +15,7 @@ export function registerRoutes(): Router {
     getActions(router)
     getAction(router)
     deleteAction(router)
+    patchActionStatus(router)
 
     return router
 }

@@ -28,4 +28,13 @@ export class ActionService {
         return this.helper.delete(id)
     }
 
+
+    async patchActionStatus(actionId: string) {
+        const exists = await this.helper.getById(actionId)
+
+        if (!exists) throw new ActionNotFound("Action not found")
+
+        return this.helper.patchActionStatus(actionId)
+    }
+
 }

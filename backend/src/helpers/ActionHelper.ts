@@ -27,4 +27,10 @@ export class ActionHelper extends Helper<Action> {
         return (await this.getRepository()).delete(id)
     }
 
+    async patchActionStatus(actionId: string) {
+        return (await this.getRepository()).update(
+            { id: actionId },
+            { status: StatusType.Done }
+        )
+    }
 }
