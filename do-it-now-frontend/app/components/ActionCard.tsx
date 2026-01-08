@@ -12,11 +12,13 @@ const handleClick = async (actionId: string) => {
     console.log(`Acción con id ${actionId} ejecutandose`)
 
     try {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/actions/${actionId}/done`, {
+        await fetch(`${process.env.NEXT_PUBLIC_DO_IT_NOW_API}/v1/actions/${actionId}/done`, {
             method: "PATCH",
         })
 
     } catch (error) {
+
+        console.log("EERRRROOOORRRR", error)
 
     }
 }
