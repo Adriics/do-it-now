@@ -8,18 +8,53 @@ interface ActionCardProps {
     status: StatusType
 }
 
-const handleClick = async (actionId: string) => {
+const handleClick = async (actionId: string, type: ActionType, receptor: string, message: string) => {
     console.log(`Acción con id ${actionId} ejecutandose`)
 
     try {
-        await fetch(`${process.env.NEXT_PUBLIC_DO_IT_NOW_API}/v1/actions/${actionId}/done`, {
-            method: "PATCH",
-        })
+
+        if (!receptor) return
+
+        let url = ""
+
+        if (type === ActionType.WhatsApp) {
+            url = `https://wa.me/${receptor}?text=${encodeURIComponent(message)}`
+        }
+
+        if (type === ActionType.Email) {
+            url = `mailto:${receptor}?subject=Recordatorio&body=${encodeURIComponent(message)}`
+        }
+
+        if (url) {
+            window.open(url, "_blank")
+        }
+
+        await fetch(
+            `${process.env.NEXT_PUBLIC_DO_IT_NOW_API}/v1/do-it-now/actions/${actionId}/done`,
+            { method: "PATCH" }
+        )
 
     } catch (error) {
 
         console.log("EERRRROOOORRRR", error)
 
+    }
+}
+
+const handleDelete = async (actionId: string) => {
+
+    console.log(`Action con id ${actionId} eliminandose`)
+
+    try {
+
+        if (!actionId) return
+
+        await fetch(`${process.env.NEXT_PUBLIC_DO_IT_NOW_API}/v1/do-it-now/actions/${actionId}`, {
+            method: "DELETE"
+        })
+
+    } catch (error) {
+        console.error(error)
     }
 }
 
@@ -42,7 +77,8 @@ export default function ActionCard({
                         <span>{receptor}</span>
                         <span>{message}</span>
                         <span>{status}</span>
-                        <button onClick={() => handleClick(id)} className="cursor-pointer">Ejecutar acción</button>
+                        <button onClick={() => handleClick(id, type, receptor, message)} className="cursor-pointer border border-black m-2 rounded-lg hover:bg-green-200 transition-all">Ejecutar acción</button>
+                        <button onClick={() => handleDelete(id)} className="cursor-pointer border border-black m-2 rounded-lg hover:bg-red-500 transition-all">Eliminar</button>
                     </div>
                 )
             }
@@ -55,6 +91,7 @@ export default function ActionCard({
                         <span>{receptor}</span>
                         <span>{message}</span>
                         <span>{status}</span>
+                        <button onClick={() => handleDelete(id)} className="cursor-pointer border border-black m-2 rounded-lg hover:bg-red-500 transition-all">Eliminar</button>
                     </div>
                 )
             }
@@ -62,11 +99,12 @@ export default function ActionCard({
             {
                 status === StatusType.Done && (
                     <div className="w-80 flex flex-col bg-green-200 m-8">
-                        <h1>Pendiente</h1>
+                        <h1>Ejecutadas</h1>
                         <span>{type}</span>
                         <span>{receptor}</span>
                         <span>{message}</span>
                         <span>{status}</span>
+                        <button onClick={() => handleDelete(id)} className="cursor-pointer border border-black m-2 rounded-lg hover:bg-red-500 transition-all">Eliminar</button>
                     </div>
                 )
             }
