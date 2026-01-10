@@ -14,6 +14,6 @@ export default function patchActionStatus(router: Router) {
     controller.run = controller.run.bind(controller)
 
 
-    router.patch("/v1/actions/:actionId/done", controller.run)
+    router.patch("/v1/actions/:id/done", controller.run)
 
 }

@@ -16,6 +16,7 @@ export function registerRoutes(): Router {
     getAction(router)
     deleteAction(router)
     patchActionStatus(router)
+    deleteAction(router)
 
     return router
 }

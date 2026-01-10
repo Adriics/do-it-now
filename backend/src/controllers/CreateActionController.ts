@@ -14,8 +14,8 @@ export class CreateActionController {
 
             const { type, receptor, message, executeAt } = req.body
 
-            if (!type || !receptor || !executeAt) {
-                throw new InvalidFields("Faltan campos, rellena todos")
+            if (!type || !receptor || !executeAt || isNaN(new Date(executeAt).getTime())) {
+                throw new InvalidFields("Faltan campos o fecha inválida")
             }
 
             await this.service.create(v4(), type, receptor, executeAt, message)
@@ -27,7 +27,8 @@ export class CreateActionController {
 
         } catch (error) {
 
-            if (error instanceof InvalidFields) return res.status(404).send(error.message)
+            if (error instanceof InvalidFields)
+                return res.status(400).send(error.message)
 
             return res.status(500).send()
 
