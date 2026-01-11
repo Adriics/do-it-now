@@ -19,6 +19,11 @@ const handleClick = async (actionId: string, type: ActionType, receptor: string,
 
         if (type === ActionType.WhatsApp) {
             url = `https://wa.me/${receptor}?text=${encodeURIComponent(message)}`
+
+            await fetch(`${process.env.NEXT_PUBLIC_DO_IT_NOW_API}/v1/actions/${actionId}/done`, {
+                method: "PATCH"
+            })
+
         }
 
         if (type === ActionType.Email) {
@@ -28,11 +33,6 @@ const handleClick = async (actionId: string, type: ActionType, receptor: string,
         if (url) {
             window.open(url, "_blank")
         }
-
-        await fetch(
-            `${process.env.NEXT_PUBLIC_DO_IT_NOW_API}/v1/do-it-now/actions/${actionId}/done`,
-            { method: "PATCH" }
-        )
 
     } catch (error) {
 
@@ -72,11 +72,11 @@ export default function ActionCard({
             {
                 status === StatusType.Ready && (
                     <div className="w-80 flex flex-col bg-orange-200 m-8">
-                        <h1>Lista para ejecutar</h1>
-                        <span>{type}</span>
-                        <span>{receptor}</span>
-                        <span>{message}</span>
-                        <span>{status}</span>
+                        <h1 className="text-black">Lista para ejecutar</h1>
+                        <span className="text-black">{type}</span>
+                        <span className="text-black">{receptor}</span>
+                        <span className="text-black">{message}</span>
+                        <span className="text-black">{status}</span>
                         <button onClick={() => handleClick(id, type, receptor, message)} className="cursor-pointer border border-black m-2 rounded-lg hover:bg-green-200 transition-all">Ejecutar acción</button>
                         <button onClick={() => handleDelete(id)} className="cursor-pointer border border-black m-2 rounded-lg hover:bg-red-500 transition-all">Eliminar</button>
                     </div>
@@ -86,12 +86,12 @@ export default function ActionCard({
             {
                 status === StatusType.Pending && (
                     <div className="w-80 flex flex-col bg-red-200 m-8">
-                        <h1>Pendiente</h1>
-                        <span>{type}</span>
-                        <span>{receptor}</span>
-                        <span>{message}</span>
-                        <span>{status}</span>
-                        <button onClick={() => handleDelete(id)} className="cursor-pointer border border-black m-2 rounded-lg hover:bg-red-500 transition-all">Eliminar</button>
+                        <h1 className="text-black">Pendiente</h1>
+                        <span className="text-black">{type}</span>
+                        <span className="text-black">{receptor}</span>
+                        <span className="text-black">{message}</span>
+                        <span className="text-black">{status}</span>
+                        <button onClick={() => handleDelete(id)} className="cursor-pointer border border-black text-black m-2 rounded-lg hover:bg-red-500 transition-all">Eliminar</button>
                     </div>
                 )
             }

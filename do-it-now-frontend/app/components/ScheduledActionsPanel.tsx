@@ -48,9 +48,14 @@ export default function ScheduledActionsPanel() {
 
     return (
 
-        <div className="flex flex-col">
-            {
-                actions.map((action) => (
+        <div className="w-full flex flex-col">
+            {actions.length === 0 && (
+                <div className="min-h-20 flex text-center justify-center shadow-lg shadow-gray-500/50">
+                    <span className="text-center">No tienes ninguna acción programada.</span>
+                </div>
+            )}
+            <div className="bg-gray-100">
+                {actions.map((action) => (
                     <ActionCard
                         key={action.id}
                         id={action.id ?? ""}
@@ -59,8 +64,8 @@ export default function ScheduledActionsPanel() {
                         type={action.type ?? ""}
                         status={action.status}
                     />
-                ))
-            }
+                ))}
+            </div>
         </div>
     )
 }

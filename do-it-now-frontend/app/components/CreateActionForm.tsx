@@ -9,6 +9,7 @@ export default function CreateActionForm() {
     const [receptor, setReceptor] = useState("")
     const [message, setMessage] = useState("")
     const [actionDate, setActionDate] = useState<string | number>("")
+    const [permission, setPermission] = useState<NotificationPermission>("default")
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -32,6 +33,12 @@ export default function CreateActionForm() {
                     executeAt: actionDate ? new Date(actionDate).toISOString() : null
                 })
             })
+
+            if (Notification.permission === "default") {
+                const permission = Notification.requestPermission()
+            }
+
+
         } catch (error) {
             console.error(error)
         }
@@ -40,25 +47,27 @@ export default function CreateActionForm() {
 
     return (
 
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="selector">Tipo de acción:</label>
-            <select name="selector" id="selector" className="text-black" value={type} onChange={(e) => setType(e.target.value)}>
-                <option value="WhatsApp">WhatsApp</option>
-                <option value="Email">Email</option>
-                <option value="Personal">Personal</option>
-            </select>
+        <div className="bg-gray-900 p-10">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
+                <label htmlFor="selector">Tipo de acción:</label>
+                <select name="selector" id="selector" className="text-white" value={type} onChange={(e) => setType(e.target.value)}>
+                    <option className="text-black transition-all" value="WhatsApp">WhatsApp</option>
+                    <option className="text-black transition-all" value="Email">Email</option>
+                    <option className="text-black transition-all" value="Personal">Personal</option>
+                </select>
 
-            <label htmlFor="receptor">Receptor:</label>
-            <input type="text" name="receptor" id="receptor" value={receptor} onChange={(e) => setReceptor(e.target.value)} />
+                <label htmlFor="receptor" className="flex flex-col">Receptor:</label>
+                <input type="text" name="receptor" id="receptor" value={receptor} onChange={(e) => setReceptor(e.target.value)} className="border border-white rounded-lg p-2" />
 
-            <label htmlFor="message">Mensaje:</label>
-            <textarea name="message" id="message" value={message} onChange={(e) => setMessage(e.target.value)} title="Mensaje:"></textarea>
+                <label htmlFor="message">Mensaje:</label>
+                <textarea name="message" id="message" value={message} onChange={(e) => setMessage(e.target.value)} title="Mensaje:" className="border border-white rounded-lg p-2"></textarea>
 
-            <label htmlFor="date">Fecha:</label>
-            <input type="datetime-local" name="date" id="date" value={actionDate} onChange={(e) => setActionDate(e.target.value)} />
+                <label htmlFor="date">Fecha programada:</label>
+                <input type="datetime-local" name="date" id="date" value={actionDate} onChange={(e) => setActionDate(e.target.value)} className="border border-white rounded-lg p-2" />
 
-            <button type="submit">Crear acción</button>
-        </form>
+                <button type="submit" className="bg-blue-700 p-4 rounded-lg cursor-pointer hover:bg-blue-800 transition-all">Crear acción</button>
+            </form>
+        </div>
 
     )
 }
