@@ -38,6 +38,33 @@ export default function CreateActionForm() {
                 const permission = Notification.requestPermission()
             }
 
+            if (Notification.permission === "granted") {
+                const registration = await navigator.serviceWorker.ready
+
+                const existingSubscription = await registration.pushManager.getSubscription()
+
+                if (!existingSubscription) {
+                    const newSubscription = await registration.pushManager.subscribe({
+                        applicationServerKey: "...",
+                        userVisibleOnly: true
+                    })
+
+                    await fetch(`${process.env.NEXT_PUBLIC_DO_IT_NOW_API}/v1/push/subscribe`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            subscription: newSubscription
+                        })
+                    })
+
+                    console.log("Nueva suscripcion creada: ", newSubscription)
+                } else {
+                    console.log("Ya estaba suscrito: ", existingSubscription)
+                }
+            }
+
 
         } catch (error) {
             console.error(error)

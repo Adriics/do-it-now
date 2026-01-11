@@ -21,10 +21,12 @@
     "pg": "^8.16.3",
     "ts-node": "^10.9.2",
     "typeorm": "^0.3.28",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6"
+    "@types/express": "^5.0.6",
+    "@types/web-push": "^3.6.4"
   }
 }
