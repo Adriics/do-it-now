@@ -7,15 +7,16 @@ interface NotificationPayload {
 }
 export class PushService {
 
-    async preparePayloadNotification(subscription: webpush.PushSubscription, { title, body, link }: NotificationPayload) {
+    constructor() {
+        webpush.setVapidDetails("mailto:admin@doitnow.dev", process.env.VAPID_PUBLIC_KEY!,
+            process.env.VAPID_PRIVATE_KEY!)
+    }
 
-        const payload = JSON.stringify({
-            title,
-            body,
-            link
-        })
+    async send(subscription: webpush.PushSubscription, payload: NotificationPayload) {
 
-        await webpush.sendNotification(subscription, payload)
+        const data = JSON.stringify(payload)
+
+        await webpush.sendNotification(subscription, data)
     }
 
 }

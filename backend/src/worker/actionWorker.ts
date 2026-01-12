@@ -1,11 +1,14 @@
+import { PushSubscriptionHelper } from "../helpers/PushSubscriptionHelper";
 import { ActionRepository } from "../repository/ActionRepository";
 import { ActionExecutor } from "../service/ActionExecutor";
+import { PushService } from "../service/PushService";
 
 
 export class ActionWorker {
     private readonly intervalMS = 30_000 // 30 segundos
 
-    constructor(private readonly repo: ActionRepository, private readonly executor: ActionExecutor) { }
+    constructor(private readonly actionRepo: ActionRepository, private readonly executor: ActionExecutor, private readonly pushService: PushService, private readonly subscriptionHelper: PushSubscriptionHelper) { }
+
     start() {
         console.log("Action worker started")
 
@@ -21,21 +24,33 @@ export class ActionWorker {
         }, this.intervalMS);
     }
 
-    private async checkPendingActions() {
+    async checkPendingActions() {
         const now = new Date()
 
-        const pendingActions =
-            await this.repo.findPendingBefore(now)
+        const actions =
+            await this.actionRepo.findPendingBefore(now)
 
-        if (pendingActions.length === 0) return;
+        if (actions.length === 0) return;
 
-        const actionIds = pendingActions.map(action => action.id)
+        const subscriptions = await this.subscriptionHelper.findAll()
 
-        await this.repo.markAsReady(actionIds)
+        for (const action of actions) {
+            const payload = this.executor.execute(action)
 
-        await Promise.all(pendingActions.map(action => this.executor.preparePayload(action)))
+            for (const sub of subscriptions) {
+                await this.pushService.send(
+                    {
+                        endpoint: sub.endpoint,
+                        keys: {
+                            p256dh: sub.p256dh,
+                            auth: sub.auth
+                        }
+                    },
+                    payload
+                )
+            }
+        }
 
-        console.log(`${actionIds.length} action(s) marked as READY`)
-
+        await this.actionRepo.markAsDone(actions.map(a => a.id))
     }
 }

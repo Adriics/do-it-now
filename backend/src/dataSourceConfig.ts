@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import "dotenv/config";
 import { actionModel } from "./model/ActionModel";
+import { pushSubscriptionModel } from "./model/PushSubscriptionModel";
 
 const dataSource = new DataSource({
     type: "postgres",
@@ -11,7 +12,7 @@ const dataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: false,
     logging: true,
-    entities: [actionModel],
+    entities: [actionModel, pushSubscriptionModel],
     migrations: ["persistence/migrations/*.ts"],
     migrationsTableName: "migrations"
 })

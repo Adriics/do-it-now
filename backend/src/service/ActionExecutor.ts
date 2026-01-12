@@ -1,27 +1,37 @@
 import { Action, ActionType } from "../entities/Action";
+import { NotificationPayload } from "../entities/NotificationPayload";
 
 
 export class ActionExecutor {
 
-    async preparePayload(action: Action) {
+    execute(action: Action): NotificationPayload {
+        switch (action.type) {
+            case ActionType.Email:
+                return {
+                    title: "📧 Email pendiente",
+                    body: action.message ?? "Tienes un email que enviar",
+                    link: `/actions/${action.id}`
+                }
 
-        if (action.type === ActionType.Email) {
-            const email = action.receptor
-            const subject = encodeURIComponent(action.message ?? "")
-            const body = encodeURIComponent(action.message ?? "")
-            return `mailto:${email}?subject=${subject}&body=${body}`
-        }
+            case ActionType.WhatsApp:
+                return {
+                    title: "WhatsApp pendiente",
+                    body: action.message ?? "Tienes un WhatsApp que enviar",
+                    link: `/actions/${action.id}`
+                }
 
-        if (action.type === ActionType.WhatsApp) {
-            const phone = action.receptor
-            const text = encodeURIComponent(action.message ?? "")
-            return `https://wa.me/${phone}?text=${text}`
-        }
+            case ActionType.Personal:
+                return {
+                    title: "Acción personal",
+                    body: action.message ?? "Tienes una acción pendiente",
+                    link: `/actions/${action.id}`
+                }
 
-        if (action.type === ActionType.Personal) {
-            return action.message
+            default:
+                throw new Error(`Unsupported action type: ${action.type}`)
         }
     }
+
 
 
 
