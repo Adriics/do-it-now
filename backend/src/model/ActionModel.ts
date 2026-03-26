@@ -18,6 +18,10 @@ export const actionModel = new EntitySchema<Action>({
         receptor: {
             type: "text"
         },
+        phone: {
+            type: "varchar",
+            nullable: true
+        },
         message: {
             type: "text"
         },

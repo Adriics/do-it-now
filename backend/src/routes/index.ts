@@ -4,6 +4,7 @@ import getActions from "./getActions";
 import getAction from "./getAction";
 import deleteAction from "./deleteAction";
 import patchActionStatus from "./patchActionStatus";
+import createPushSubscription from "./createPushSubscription";
 
 
 
@@ -17,6 +18,7 @@ export function registerRoutes(): Router {
     deleteAction(router)
     patchActionStatus(router)
     deleteAction(router)
+    createPushSubscription(router)
 
     return router
 }

@@ -1,45 +1,45 @@
-import dataSource from "../dataSourceConfig";
-import { Action, StatusType } from "../entities/Action";
-import { actionModel } from "../model/ActionModel";
-import { ActionRepository } from "./ActionRepository";
-import { In, LessThanOrEqual, Repository } from "typeorm";
+import db from "../dataSourceConnection"
+import { Action, StatusType } from "../entities/Action"
+import { actionModel } from "../model/ActionModel"
+import { ActionRepository } from "./ActionRepository"
+import { In, LessThanOrEqual, Repository } from "typeorm"
 
 export class TypeOrmActionRepository implements ActionRepository {
 
-    private getRepository(): Repository<Action> {
-        return dataSource.getRepository(actionModel)
-    }
+  private async getRepository(): Promise<Repository<Action>> {
+    return (await db).getRepository(actionModel)
+  }
 
-    async findPendingBefore(date: Date): Promise<Action[]> {
-        return this.getRepository().find({
-            where: {
-                status: StatusType.Pending,
-                executeAt: LessThanOrEqual(date)
-            }
-        })
-    }
+  async markAsDone(actionsIds: string[]): Promise<void> {
+    if (actionsIds.length === 0) return Promise.resolve()
+    await (await this.getRepository()).update(
+      { id: In(actionsIds) },
+      { status: StatusType.Done },
+    )
+  }
 
-    async markAsReady(actionIds: string[]): Promise<void> {
+  async findPendingBefore(date: Date): Promise<Action[]> {
+    return (await this.getRepository()).find({
+      where: {
+        status: StatusType.Pending,
+        executeAt: LessThanOrEqual(date),
+      },
+    })
+  }
 
-        if (actionIds.length === 0) return
+  async markAsReady(actionIds: string[]): Promise<void> {
+    if (actionIds.length === 0) return
+    await (await this.getRepository()).update(
+      { id: In(actionIds) },
+      { status: StatusType.Ready },
+    )
+  }
 
-        await this.getRepository().update(
-            {
-                id: In(actionIds)
-            },
-            { status: StatusType.Ready })
+  async save(action: Action): Promise<void> {
+    await (await this.getRepository()).save(action)
+  }
 
-
-    }
-
-    // 👇 método extra solo para crear
-    async save(action: Action): Promise<void> {
-        this.getRepository().save(action)
-    }
-
-    // 👇 opcional para debug
-    async getAll(): Promise<Action[]> {
-        return this.getRepository().find()
-    }
-
+  async getAll(): Promise<Action[]> {
+    return (await this.getRepository()).find()
+  }
 }

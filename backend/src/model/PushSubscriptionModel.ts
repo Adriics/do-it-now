@@ -3,8 +3,8 @@ import { PushSubscription } from "../entities/PushSubscription";
 
 
 export const pushSubscriptionModel = new EntitySchema<PushSubscription>({
-    name: "PushSubscriptions",
-    tableName: "pushSubscriptions",
+    name: "PushSubscription",
+    tableName: "pushSubscription",
     target: PushSubscription,
     columns: {
         id: {

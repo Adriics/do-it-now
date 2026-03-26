@@ -8,7 +8,7 @@ interface NotificationPayload {
 export class PushService {
 
     constructor() {
-        webpush.setVapidDetails("mailto:admin@doitnow.dev", process.env.VAPID_PUBLIC_KEY!,
+        webpush.setVapidDetails(process.env.VAPID_MAILTO!, process.env.VAPID_PUBLIC_KEY!,
             process.env.VAPID_PRIVATE_KEY!)
     }
 

@@ -17,7 +17,7 @@ export class ActionExecutor {
                 return {
                     title: "WhatsApp pendiente",
                     body: action.message ?? "Tienes un WhatsApp que enviar",
-                    link: `/actions/${action.id}`
+                    link: `https://wa.me/${action.phone}?text=${encodeURIComponent(action.message ?? "")}`
                 }
 
             case ActionType.Personal:

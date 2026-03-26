@@ -1,56 +1,59 @@
-import { PushSubscriptionHelper } from "../helpers/PushSubscriptionHelper";
-import { ActionRepository } from "../repository/ActionRepository";
-import { ActionExecutor } from "../service/ActionExecutor";
-import { PushService } from "../service/PushService";
-
+import { PushSubscriptionHelper } from "../helpers/PushSubscriptionHelper"
+import { ActionRepository } from "../repository/ActionRepository"
+import { ActionExecutor } from "../service/ActionExecutor"
+import { PushService } from "../service/PushService"
 
 export class ActionWorker {
-    private readonly intervalMS = 30_000 // 30 segundos
+  private readonly intervalMS = 30_000 // 30 segundos
 
-    constructor(private readonly actionRepo: ActionRepository, private readonly executor: ActionExecutor, private readonly pushService: PushService, private readonly subscriptionHelper: PushSubscriptionHelper) { }
+  constructor(
+    private readonly actionRepo: ActionRepository,
+    private readonly executor: ActionExecutor,
+    private readonly pushService: PushService,
+    private readonly subscriptionHelper: PushSubscriptionHelper,
+  ) {}
 
-    start() {
-        console.log("Action worker started")
+  start() {
+    console.log("Action worker started")
 
-        setInterval(async () => {
-            try {
-                console.log("⏱ tick worker");
-                await this.checkPendingActions()
-            } catch (error) {
+    setInterval(async () => {
+      try {
+        console.log("⏱ tick worker")
+        await this.checkPendingActions()
+      } catch (error) {
+        console.error("Worker error: ", error)
+      }
+    }, this.intervalMS)
+  }
 
-                console.error("Worker error: ", error)
+  async checkPendingActions() {
+    const now = new Date()
 
-            }
-        }, this.intervalMS);
+    const actions = await this.actionRepo.findPendingBefore(now)
+
+    if (actions.length === 0) return
+
+    const subscriptions = await this.subscriptionHelper.findAll()
+
+    for (const action of actions) {
+      const payload = this.executor.execute(action)
+
+      await Promise.all(
+        subscriptions.map((s) =>
+          this.pushService.send(
+            {
+              endpoint: s.endpoint,
+              keys: {
+                p256dh: s.p256dh,
+                auth: s.auth,
+              },
+            },
+            payload,
+          ),
+        ),
+      )
     }
 
-    async checkPendingActions() {
-        const now = new Date()
-
-        const actions =
-            await this.actionRepo.findPendingBefore(now)
-
-        if (actions.length === 0) return;
-
-        const subscriptions = await this.subscriptionHelper.findAll()
-
-        for (const action of actions) {
-            const payload = this.executor.execute(action)
-
-            for (const sub of subscriptions) {
-                await this.pushService.send(
-                    {
-                        endpoint: sub.endpoint,
-                        keys: {
-                            p256dh: sub.p256dh,
-                            auth: sub.auth
-                        }
-                    },
-                    payload
-                )
-            }
-        }
-
-        await this.actionRepo.markAsDone(actions.map(a => a.id))
-    }
+    await this.actionRepo.markAsDone(actions.map((a) => a.id))
+  }
 }

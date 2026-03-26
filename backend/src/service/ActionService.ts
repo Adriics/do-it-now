@@ -8,8 +8,8 @@ export class ActionService {
 
     constructor(private readonly helper: ActionHelper) { }
 
-    async create(id: string, type: ActionType, receptor: string, executeAt: Date, message?: string) {
-        const action = Action.create(id, type, receptor, new Date(executeAt), message)
+    async create(id: string, type: ActionType, receptor: string, phone: string, executeAt: Date, message?: string) {
+        const action = Action.create(id, type, receptor, phone, new Date(executeAt), message)
 
         await this.helper.create(action)
     }

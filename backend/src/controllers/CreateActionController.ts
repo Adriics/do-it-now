@@ -12,13 +12,13 @@ export class CreateActionController {
 
         try {
 
-            const { type, receptor, message, executeAt } = req.body
+            const { type, receptor, phone, message, executeAt } = req.body
 
             if (!type || !receptor || !executeAt || isNaN(new Date(executeAt).getTime())) {
                 throw new InvalidFields("Faltan campos o fecha inválida")
             }
 
-            await this.service.create(v4(), type, receptor, executeAt, message)
+            await this.service.create(v4(), type, receptor, phone, executeAt, message)
 
             return res.status(201).json({
                 ok: true,
